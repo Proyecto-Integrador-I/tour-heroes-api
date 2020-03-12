@@ -9,10 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,6 +40,17 @@ public class HeroController {
     public ResponseEntity<List<Hero>> getHeroes(){
         log.info("REST request buscar todos los heroes");
         return ResponseEntity.ok(heroService.getHeroes());
+    }
+
+    @GetMapping("name/{name}")
+    public ResponseEntity<Hero> getHeroByName(@PathVariable("name") String name){
+        log.info("REST request buscar heroe por nomnbre");
+        return ResponseEntity.ok(heroService.getHeroByName(name));
+    }
+
+    @PostMapping
+    public ResponseEntity<Hero> addHero(@RequestBody Hero hero){
+        return ResponseEntity.ok(heroService.addHero(hero));
     }
 
 }
