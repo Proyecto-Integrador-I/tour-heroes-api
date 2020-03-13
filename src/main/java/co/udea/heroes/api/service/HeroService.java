@@ -40,8 +40,11 @@ public class HeroService {
         if(optionalHero.isPresent()){
             throw new DataDuplicatedException(messages.get("exception.data_duplicate_name.hero"));
         }
-
-        hero.setId(heroRepository.findHighestId() + 1);
+        try {
+            hero.setId(heroRepository.findHighestId() + 1);
+        }catch (Exception e){
+            hero.setId(1);
+        }
 
         return heroRepository.save(hero);
     }
@@ -70,8 +73,14 @@ public class HeroService {
     }
 
     public Hero updateHero(Hero hero) {
+        // Valida que exista el heroe con ese id
+        Optional<Hero> optionalHero = heroRepository.findById(hero.getId());
+        if(!optionalHero.isPresent()){
+            throw new NotFoundException(messages.get("exception.cannot_find_hero.hero"));
+        }
+
         // Valida que no se actualize a un nombre ya existente
-        Optional<Hero> optionalHero = heroRepository.findByName(hero.getName());
+        optionalHero = heroRepository.findByName(hero.getName());
         if(optionalHero.isPresent()){
             throw new DataDuplicatedException(messages.get("exception.data_duplicate_name.hero"));
         }
