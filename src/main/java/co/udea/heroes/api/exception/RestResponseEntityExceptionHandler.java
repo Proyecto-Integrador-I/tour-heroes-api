@@ -16,10 +16,24 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     private final Logger logger = LoggerFactory.getLogger(RestResponseEntityExceptionHandler.class);
 
     @ExceptionHandler({BusinessException.class})
-    protected ResponseEntity handleEntityNotFound(
+    protected ResponseEntity handleBusinessException(
             HttpServletRequest request, BusinessException ex) {
         logger.error(request.getRequestURL().toString(), ex);
         return new ResponseEntity<>( ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler({DataDuplicatedException.class})
+    protected ResponseEntity handleDataDuplicatedException(
+            HttpServletRequest request, DataDuplicatedException ex) {
+        logger.error(request.getRequestURL().toString(), ex);
+        return new ResponseEntity<>( ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler({NotFoundException.class})
+    protected ResponseEntity handleNotFoundException(
+            HttpServletRequest request, NotFoundException ex) {
+        logger.error(request.getRequestURL().toString(), ex);
+        return new ResponseEntity<>( ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Throwable.class)

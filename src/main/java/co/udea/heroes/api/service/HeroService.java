@@ -1,6 +1,8 @@
 package co.udea.heroes.api.service;
 
 import co.udea.heroes.api.exception.BusinessException;
+import co.udea.heroes.api.exception.DataDuplicatedException;
+import co.udea.heroes.api.exception.NotFoundException;
 import co.udea.heroes.api.model.Hero;
 import co.udea.heroes.api.repository.HeroRepository;
 import co.udea.heroes.api.util.Messages;
@@ -21,24 +23,58 @@ public class HeroService {
     }
 
     public Hero getHero(int id){
-        return heroRepository.findById(id).get();
+        Optional<Hero> hero = heroRepository.findById(id);
+        if(!hero.isPresent()){
+            throw new NotFoundException(messages.get("exception.cannot_find_hero.hero"));
+        }
+        return hero.get();
     }
 
     public List<Hero> getHeroes() {
-        return heroRepository.findAll();
-    }
 
-    public Hero getHeroByName(String name){
-        return heroRepository.findByName(name).get();
+        return heroRepository.findAll();
     }
 
     public Hero addHero(Hero hero){
         Optional<Hero> optionalHero = heroRepository.findByName(hero.getName());
         if(optionalHero.isPresent()){
-            throw new BusinessException(messages.get("exception.data_duplicate_name.hero"));
+            throw new DataDuplicatedException(messages.get("exception.data_duplicate_name.hero"));
         }
+
+        hero.setId(heroRepository.findHighestId() + 1);
 
         return heroRepository.save(hero);
     }
 
+    public List<Hero> searchHeroes(String term) {
+
+        return heroRepository.searchHeroes(term);
+    }
+
+    public Hero findHeroByName(String name){
+        Optional<Hero> hero = heroRepository.findByName(name);
+        if(!hero.isPresent()){
+            throw new NotFoundException(messages.get("exception.cannot_find_hero.hero"));
+        }
+        return hero.get();
+    }
+
+    public Hero deleteHero(int id) {
+        Optional<Hero> hero = heroRepository.findById(id);
+        heroRepository.deleteById(id);
+        Optional<Hero> optionalHero = heroRepository.findById(id);
+        if(optionalHero.isPresent()){
+            throw new BusinessException(messages.get("exception.cannot_delete_hero.hero"));
+        }
+        return hero.get();
+    }
+
+    public Hero updateHero(Hero hero) {
+        // Valida que no se actualize a un nombre ya existente
+        Optional<Hero> optionalHero = heroRepository.findByName(hero.getName());
+        if(optionalHero.isPresent()){
+            throw new DataDuplicatedException(messages.get("exception.data_duplicate_name.hero"));
+        }
+        return heroRepository.save(hero);
+    }
 }
