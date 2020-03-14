@@ -54,16 +54,12 @@ public class HeroService {
         return heroRepository.searchHeroes(term);
     }
 
-    public Hero findHeroByName(String name){
-        Optional<Hero> hero = heroRepository.findByName(name);
+    public Hero deleteHero(int id) {
+        Optional<Hero> hero = heroRepository.findById(id);
         if(!hero.isPresent()){
             throw new NotFoundException(messages.get("exception.cannot_find_hero.hero"));
         }
-        return hero.get();
-    }
 
-    public Hero deleteHero(int id) {
-        Optional<Hero> hero = heroRepository.findById(id);
         heroRepository.deleteById(id);
         Optional<Hero> optionalHero = heroRepository.findById(id);
         if(optionalHero.isPresent()){

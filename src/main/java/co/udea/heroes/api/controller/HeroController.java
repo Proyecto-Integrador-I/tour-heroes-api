@@ -36,7 +36,7 @@ public class HeroController {
         return ResponseEntity.ok(heroService.getHero(id));
     }
 
-    @GetMapping
+    @GetMapping("")
     @ApiOperation(value = "Buscar todos los heroes", response = Page.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Los heroes fueron encontrados", response = Page.class),
@@ -47,26 +47,15 @@ public class HeroController {
         return ResponseEntity.ok(heroService.getHeroes());
     }
 
-    @GetMapping("search/{term}")
+    @GetMapping("/")
     @ApiOperation(value = "Buscar heroe(s) que contenga(n) el termino", response = Page.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Heroe(s) encontrado(s)", response = Page.class),
             @ApiResponse(code = 404, message = "No se encontraron los héroes"),
             @ApiResponse(code = 500, message = "Error interno al procesar la respuesta")})
-    public ResponseEntity<List<Hero>> searchHeroes(@PathVariable String term){
+    public ResponseEntity<List<Hero>> searchHeroes(String name){
         log.info("RESTapi: Buscar heroe(s) que contenga(n) el termino");
-        return ResponseEntity.ok(heroService.searchHeroes(term));
-    }
-
-    @GetMapping("name/{name}")
-    @ApiOperation(value = "Buscar heroe por nombre", response = Page.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Heroe encontrado", response = Page.class),
-            @ApiResponse(code = 404, message = "No se encontró el heroe"),
-            @ApiResponse(code = 500, message = "Error interno al procesar la respuesta")})
-    public ResponseEntity<Hero> findHeroByName(@PathVariable("name") String name){
-        log.info("RESTapi: Buscar heroe por nombre");
-        return ResponseEntity.ok(heroService.findHeroByName(name));
+        return ResponseEntity.ok(heroService.searchHeroes(name));
     }
 
     @PostMapping
@@ -80,13 +69,13 @@ public class HeroController {
         return ResponseEntity.ok(heroService.addHero(hero));
     }
 
-    @DeleteMapping
+    @DeleteMapping("{id}")
     @ApiOperation(value = "Eliminar un heroe", response = Page.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Heroe eliminado", response = Page.class),
             @ApiResponse(code = 409, message = "No se pudo eliminar el heroe"),
             @ApiResponse(code = 500, message = "Error interno al procesar la respuesta")})
-    public ResponseEntity<Hero> deleteHero(int id){
+    public ResponseEntity<Hero> deleteHero(@PathVariable int id){
         log.info("RESTapi: Eliminar un heroe");
         return ResponseEntity.ok(heroService.deleteHero(id));
     }
