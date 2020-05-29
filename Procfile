@@ -1,1 +1,1 @@
-web: java -jar target/heroes-api-0.0.1-SNAPSHOT.war
+web: vendor/bin/heroku-php-apache2 public/
