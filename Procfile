@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -war target/*.war
+web: java -jar target/heroes-api-0.0.1-SNAPSHOT.war
